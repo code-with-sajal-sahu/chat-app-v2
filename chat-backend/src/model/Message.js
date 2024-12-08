@@ -10,8 +10,12 @@ const messageSchema = new mongoose.Schema(
     content: {
       type: String,
       trim: true,
-      required: true
+      required: false
     },
+    file: [{
+      type: String,
+      trim: true
+    }],
     chatRoom: {
       type: mongoose.Schema.Types.ObjectId, 
       ref: "ChatRoom",
