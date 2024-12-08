@@ -5,6 +5,7 @@ import routes from './src/routes/Routes.js';
 import connectDB from './src/config/DbConnection.js';
 import initializeSocket from './src/config/SocketConnection.js';
 import http from 'http';
+import socketConfig from './src/config/SocketConfig.js';
 // Load environment variables
 dotenv.config();
 
@@ -31,4 +32,5 @@ httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-const io = initializeSocket(httpServer);
+// const io = initializeSocket(httpServer);
+const io = socketConfig(httpServer);

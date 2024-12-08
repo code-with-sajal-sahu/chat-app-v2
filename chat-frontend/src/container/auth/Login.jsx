@@ -18,6 +18,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import { useNavigate } from "react-router-dom";
 import PageIndex from "../PageIndex";
+import { useAppContext } from "../../context/AppContext";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(6),
@@ -38,13 +39,14 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
-
+  const { setUserProfile } = useAppContext();
   const handleLogin = async (values) => {
     // Handle login logic here
     const resp = await PageIndex.handlePostRequest(PageIndex.API.AUTH.LOGIN, values);
     if(resp?.status === 200){
       localStorage.setItem('token', resp.data.token);
       localStorage.setItem('user', JSON.stringify(resp.data.user));
+      setUserProfile(resp.data.user);
       setTimeout(() => {
         navigate("/");
       }, 2000);

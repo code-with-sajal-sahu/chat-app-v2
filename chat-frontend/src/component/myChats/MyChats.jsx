@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Index from "../../container/Index";
 import PageIndex from "../../container/PageIndex";
 import SearchNewUser from "../searchNewUser/SearchNewUser";
+import { useSocket } from "../../context/SocketContext";
+import { useAppContext } from "../../context/AppContext";
 
 const messages = [
   {
@@ -48,32 +50,34 @@ const messages = [
 const MyChats = () => {
   const { selectedChat, setSelectedChat, newMessage } = PageIndex.useAppContext();
   const [open, setOpen] = useState(false);
-  const myProfile = JSON.parse(localStorage.getItem("user"));
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [myChatList, setMyChatList] = useState([]);
-  const handleGetMyChats = async () => {
-    const response = await PageIndex.handleGetRequest(
-      PageIndex.API.GET_MY_CHATS,
-      false
-    );
-    if (response.status === 200) {
-      setMyChatList(response.data);
-    }
-  };
+  const { socket } = useSocket();
+  const { userProfile } = useAppContext();
+
   const updateSelectedChat = (chat) => {
     setSelectedChat({
-      user: chat.participants.find((participant) => participant._id !== myProfile.id),
+      user: chat.participants.find((participant) => participant._id !== userProfile?.id),
       chatRoom: chat._id,
     });
   };
+
+  useEffect(()=>{
+    if (socket && userProfile?.id) {
+      socket.emit("get-my-chats", userProfile?.id);
+    }
+    socket?.on("my-chats", (chats)=> {
+      console.log("71: ", chats)
+      if (chats?.status === 200) {  
+        setMyChatList(chats?.data);
+      }
+    })
+  }, [socket, userProfile?.id]);
   const handleSearchMyChats = (searchText) => {
     // setMyChatList(myChatList.filter((chat) => chat.name.includes(searchText)));
   };
 
-  useEffect(() => {
-    handleGetMyChats();
-  }, [newMessage]);
   return (
     <>
       <Index.Box
@@ -111,10 +115,10 @@ const MyChats = () => {
         {/* <Index.List sx={{ bgcolor: "background.paper" }}> */}
         <Index.List>
           {myChatList.map((chat) => (
-            <Index.ListItem
+            <Index.ListItemButton
               key={chat.id}
               button
-              // selected={selectedChat?.user?._id === chat.id}
+              selected={selectedChat?.chatRoom === chat?._id}
               onClick={() => updateSelectedChat(chat)}
             >
               <Index.ListItemAvatar>
@@ -129,7 +133,7 @@ const MyChats = () => {
               <Index.ListItemText
                 primary={
                   chat.participants.find(
-                    (participant) => participant._id !== myProfile.id
+                    (participant) => participant._id !== userProfile?.id
                   ).name
                 }
                 secondary={
@@ -172,7 +176,7 @@ const MyChats = () => {
                   {Index.moment(chat.lastMessage?.createdAt).format("hh:mm A")}
                 </Index.Typography>
               </Index.Box>
-            </Index.ListItem>
+            </Index.ListItemButton>
           ))}
         </Index.List>
       </Index.Box>

@@ -3,11 +3,12 @@ import PageIndex from "../../../container/PageIndex";
 import Index from "../../../container/Index";
 
 const Sidebar = () => {
-  const { isDarkMode, toggleTheme } = PageIndex.useAppContext();
+  const { isDarkMode, toggleTheme, setUserProfile } = PageIndex.useAppContext();
   const navigate = PageIndex.useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    setUserProfile(null);
     navigate("/login");
   };
   return (
