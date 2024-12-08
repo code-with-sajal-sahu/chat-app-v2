@@ -25,15 +25,7 @@ export default function ChatInterface() {
       <PageIndex.MyChats />
       {/* Main chat area */}
       <Index.Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
-        {selectedChat ? (
-          <>
-            {/* Chat header */}
-            <PageIndex.ChatHeader />
             <PageIndex.ChatRoom />
-          </>
-        ) : (
-          <PageIndex.NoChatSelected />
-        )}
       </Index.Box>
     </Index.Box>
   );

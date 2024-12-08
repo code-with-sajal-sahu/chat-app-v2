@@ -3,9 +3,11 @@ import React, { createContext, useContext, useState } from 'react';
 const AppContext = createContext();
 
 export function AppProvider({ children }) {
+  const myProfile = JSON.parse(localStorage.getItem("user"));
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [selectedChat, setSelectedChat] = useState();
   const [newMessage, setNewMessage] = useState(false);
+  const [userProfile, setUserProfile] = useState(myProfile);
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
   };
@@ -17,6 +19,8 @@ export function AppProvider({ children }) {
     setSelectedChat,
     newMessage,
     setNewMessage,
+    userProfile,
+    setUserProfile
   };
 
   return (

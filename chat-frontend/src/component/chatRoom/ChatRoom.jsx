@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState, useRef } from "react";
 import Index from "../../container/Index";
 import PageIndex from "../../container/PageIndex";
 import io from "socket.io-client";
+import { useSocket } from "../../context/SocketContext";
+import { useAppContext } from "../../context/AppContext";
 
 const MessageBubble = Index.styled(Index.Paper)(({ theme, isUser }) => ({
   padding: theme.spacing(1, 2),
@@ -24,10 +26,22 @@ const SOCKET_ENDPOINT = "http://localhost:5000";
 const ChatRoom = () => {
   const [messageInput, setMessageInput] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
-  const [socket, setSocket] = useState(null);
   const { selectedChat, setNewMessage, newMessage } = PageIndex.useAppContext();
   const myProfile = JSON.parse(localStorage.getItem("user"));
+  const { socket } = useSocket();
   const messagesEndRef = useRef(null);
+  const { userProfile } = useAppContext();
+
+  const handleSendMessage = () => {
+    if (messageInput) {
+      socket?.emit("send-message", {
+        sender: userProfile?.id,
+        receiver: selectedChat?.user?._id,
+        content: messageInput,
+      });
+      setMessageInput("");
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -38,80 +52,40 @@ const ChatRoom = () => {
   }, [chatMessages]);
 
   useEffect(() => {
-    const newSocket = io(SOCKET_ENDPOINT);
-    setSocket(newSocket);
+    setChatMessages([]);
+    if (socket && selectedChat?.chatRoom) {
+      socket.emit("get-chat-messages", selectedChat?.chatRoom);
+    }
+    socket?.on("chat-messages", (chatMessages) => {
+      if (chatMessages?.status === 200) {
+        setChatMessages(chatMessages?.data);
+      }
+    });
+
+    socket?.on("new-message", (messageInfo) => {
+      if (messageInfo?.status === 200) {
+        if (
+          (selectedChat && !selectedChat.chatRoom) ||
+          selectedChat?.chatRoom === messageInfo?.data?.chatRoom
+        ) {
+          setChatMessages((prev) => {
+            return [...prev, messageInfo?.data];
+          });
+        }
+        socket?.emit("get-my-chats", userProfile?.id);
+      }
+    });
 
     return () => {
-      newSocket.close();
+      socket?.off("chat-messages");
+      socket?.off("new-message");
     };
-  }, []);
-
-  useEffect(() => {
-    if (socket && myProfile?.id) {
-      socket.emit("setup", myProfile.id);
-    }
-  }, [socket, myProfile?.id]);
-
-  useEffect(() => {
-    if (socket && selectedChat?.chatRoom) {
-      socket.emit("join chat", selectedChat.chatRoom);
-    }
-    if (socket) {
-      socket.on("message received", (message) => {
-        if (selectedChat?.chatRoom === message.chatRoom) {
-          setChatMessages((prev) => [...prev, message]);
-        }
-        setNewMessage(!newMessage);
-      });
-    }
   }, [socket, selectedChat?.chatRoom]);
 
-  const handleSendMessage = async () => {
-    const response = await PageIndex.handlePostRequest(
-      PageIndex.API.SEND_MESSAGE,
-      {
-        content: messageInput,
-        receiverId: selectedChat?.user?._id,
-      },
-      false
-    );
-    if (response.status === 200) {
-      if (socket) {
-        socket.emit("new message", {
-          chatRoomId: selectedChat.chatRoom,
-          message: response.data,
-        });
-      }
-      setChatMessages((prev) => [...prev, response.data]);
-      setMessageInput("");
-      setNewMessage(!newMessage);
-    }
-  };
-
-  const handleGetChatMessages = useCallback(async () => {
-    const response = await PageIndex.handlePostRequest(
-      PageIndex.API.GET_CHAT_MESSAGES,
-      {
-        chatRoomId: selectedChat?.chatRoom,
-      },
-      false
-    );
-    if (response.status === 200) {
-      setChatMessages(response.data);
-    }
-  }, [selectedChat?.chatRoom]);
-
-  useEffect(() => {
-    if (selectedChat?.chatRoom) {
-      handleGetChatMessages();
-    } else {
-      setChatMessages([]);
-    }
-  }, [selectedChat?.chatRoom, handleGetChatMessages]);
-
-  return (
+  return selectedChat ? (
     <>
       {/* Chat messages */}
+      <PageIndex.ChatHeader />
       <Index.Box
         sx={{
           flexGrow: 1,
@@ -199,6 +173,8 @@ const ChatRoom = () => {
         </Index.IconButton>
       </Index.Paper>
     </>
+  ) : (
+    <PageIndex.NoChatSelected />
   );
 };
 
