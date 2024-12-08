@@ -20,6 +20,7 @@
     "react-toastify": "^10.0.6",
     "socket.io-client": "^4.8.1",
     "web-vitals": "^2.1.4",
+    "yet-another-react-lightbox": "^3.21.7",
     "yup": "^1.4.0"
   },
   "scripts": {

@@ -15,6 +15,7 @@ import {
   Tooltip,
   Modal,
   ListItemButton,
+  Divider,
 } from "@mui/material";
 import {
   Search,
@@ -30,6 +31,7 @@ import {
   AccountCircle,
   Settings,
   Palette,
+  Close,
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
@@ -78,6 +80,8 @@ const Index = {
   LogoutIcon,
   NewChatIcon,
   ListItemButton,
+  Divider,
+  Close,
 
   // 
   moment
