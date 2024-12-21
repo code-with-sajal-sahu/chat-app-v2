@@ -15,7 +15,7 @@ const httpServer = http.createServer(app);
 // Middleware
 app.use(cors());
 app.use(express.json());
-
+app.use("/public/upload", express.static('public/upload'));
 // Routes
 app.use('/api', routes);
 
