@@ -13,4 +13,9 @@ router.post('/search-user',auth, searchUser);
 router.post('/send-message', auth, sendMessage);
 router.get('/get-my-chats', auth, getMyChats);
 router.post('/get-chat-messages', auth, getChatMessages);
+router.get('/verify', auth, (req, res)=>{
+    if(req.user){
+        res.status(200).json();
+    }
+})
 export default router;

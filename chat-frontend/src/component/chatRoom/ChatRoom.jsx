@@ -60,7 +60,6 @@ const ChatRoom = () => {
       if (previewUrl) {
         // Handle file upload logic here
         // const reader = new FileReader();
-        // console.log("52: ", reader)
         // reader.onloadend = () => {
         //   socket?.emit("send-message", {
         //     sender: userProfile?.id,
@@ -74,7 +73,6 @@ const ChatRoom = () => {
         //   });
         // };
         // reader.readAsDataURL(selectedFile);
-        console.log("71: ", selectedFile);
         socket?.emit("send-message", {
           sender: userProfile?.id,
           receiver: selectedChat?.user?._id,
@@ -213,7 +211,7 @@ const ChatRoom = () => {
                   {message.file.slice(0, 4).map((file, index) => (
                     <Index.Box
                       key={index}
-                      sx={{ position: "relative", cursor: "pointer" }}
+                      sx={{ position: "relative", cursor: "pointer"}}
                       onClick={() =>
                         handleOpenViewImage(
                           `${SOCKET_ENDPOINT}/public/upload/${file}`
@@ -258,7 +256,7 @@ const ChatRoom = () => {
                   ))}
                 </Index.Box>
               )}
-              <Index.Typography variant="body1">
+              <Index.Typography variant="body1" sx={{maxWidth: "400px"}}>
                 {message.content}
               </Index.Typography>
             </MessageBubble>
@@ -273,7 +271,7 @@ const ChatRoom = () => {
                   }),
               }}
             >
-              {Index.moment(message.createdAt).format("hh:mm A")}
+              {Index.moment(message.createdAt).format("DD/MM/YYYY hh:mm A")}
             </Index.Typography>
           </Index.Box>
         ))}

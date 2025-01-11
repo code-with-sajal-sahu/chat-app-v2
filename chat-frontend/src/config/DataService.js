@@ -19,6 +19,10 @@ axiosInstance.interceptors.request.use(config => {
   return config;
 });
 
+// axiosInstance.interceptors.response.use(()=>{}, (err)=>{
+//   console.log("23: reject ", err?.status)
+// })
+
 export const handlePostRequest = async (endpoint, data, showToast = true) => {
     try{
         const response = await axiosInstance.post(endpoint, data);

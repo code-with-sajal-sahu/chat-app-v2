@@ -8,6 +8,7 @@ export const auth = async (req, res, next) => {
 
     if (!token) {
       return res.status(401).json({
+        status: 401,
         message: 'No authentication token, access denied'
       });
     }
@@ -20,6 +21,7 @@ export const auth = async (req, res, next) => {
     
     if (!user) {
       return res.status(401).json({
+        status: 401,
         message: 'User not found'
       });
     }
@@ -32,6 +34,7 @@ export const auth = async (req, res, next) => {
   } catch (error) {
     console.error(error);
     res.status(401).json({
+      status: 401,
       message: 'Token is invalid or expired'
     });
   }

@@ -16,6 +16,7 @@ import {
   Modal,
   ListItemButton,
   Divider,
+  ListItemIcon,
 } from "@mui/material";
 import {
   Search,
@@ -32,6 +33,14 @@ import {
   Settings,
   Palette,
   Close,
+  Person,
+  Security,
+  Notifications,
+  ChevronRight,
+  Edit,
+  MailOutline,
+  StarOutline,
+  FormatQuoteRounded
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
@@ -41,6 +50,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { toast } from "react-toastify";
 import NewChatIcon from '@mui/icons-material/AddComment';
 import moment from "moment";
+import NotificationsIcon from '@mui/icons-material/Notifications';
 const Index = {
   // #region Components import
   Box,
@@ -60,6 +70,7 @@ const Index = {
   Tooltip,
   toast,
   Modal,
+  ListItemIcon,
   // #region Icons import
   Search,
   MoreVert,
@@ -82,7 +93,15 @@ const Index = {
   ListItemButton,
   Divider,
   Close,
-
+  NotificationsIcon,
+  Person,
+  Security,
+  Notifications,
+  ChevronRight,
+  Edit,
+  MailOutline,
+  StarOutline,
+  FormatQuoteRounded,
   // 
   moment
 };
