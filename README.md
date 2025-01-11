@@ -30,6 +30,8 @@ A modern real-time chat application built with React, Node.js, Socket.IO and Mon
 
 ![Chat Interface](https://github.com/user-attachments/assets/e7c84d24-5a23-4c74-bf5a-142e9d9bba9a)
 ![Image Gallery](https://github.com/user-attachments/assets/c88e94ca-37af-40de-a39f-e3cd0016aa14)
+![Profile section](https://github.com/user-attachments/assets/ffccf874-5c8b-4ab0-b5b8-dc5e81ad77be)
+
 
 ## Key Features
 
