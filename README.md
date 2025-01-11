@@ -5,7 +5,7 @@ A modern real-time chat application built with React, Node.js, Socket.IO and Mon
 ## Features
 
 - Real-time messaging with Socket.IO
-- Image and video file sharing
+- Image file sharing
 - Message read status
 - Image gallery view with lightbox
 - Dark/Light theme support
@@ -36,6 +36,4 @@ A modern real-time chat application built with React, Node.js, Socket.IO and Mon
 - Real-time bidirectional communication
 - File upload and preview
 - Image gallery with zoom, slideshow and fullscreen modes
-- Message read receipts
-- Responsive UI that works on desktop and mobile
 - Theme customization
