@@ -192,7 +192,7 @@ const Login = () => {
                 Sign In
               </Button>
 
-              <Divider sx={{ my: 3 }}>OR</Divider>
+              {/* <Divider sx={{ my: 3 }}>OR</Divider>
 
               <Button
                 fullWidth
@@ -232,7 +232,7 @@ const Login = () => {
                 }}
               >
                 Continue with Facebook
-              </Button>
+              </Button> */}
 
               <Typography variant="body1" color="text.secondary" align="center">
                 Don't have an account?{" "}

@@ -48,36 +48,61 @@ const messages = [
   },
 ];
 const MyChats = () => {
-  const { selectedChat, setSelectedChat, newMessage } = PageIndex.useAppContext();
+  const { selectedChat, setSelectedChat, newMessage } =
+    PageIndex.useAppContext();
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [myChatList, setMyChatList] = useState([]);
+  const [filterMyChat, setFilterMyChat] = useState([]);
   const { socket } = useSocket();
   const { userProfile } = useAppContext();
 
   const updateSelectedChat = (chat) => {
     setSelectedChat({
-      user: chat.participants.find((participant) => participant._id !== userProfile?.id),
+      user: chat.participants.find(
+        (participant) => participant._id !== userProfile?.id
+      ),
       chatRoom: chat._id,
     });
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     if (socket && userProfile?.id) {
       socket.emit("get-my-chats", userProfile?.id);
     }
-    socket?.on("my-chats", (chats)=> {
-      console.log("71: ", chats)
-      if (chats?.status === 200) {  
+    socket?.on("my-chats", (chats) => {
+      if (chats?.status === 200) {
         setMyChatList(chats?.data);
       }
-    })
+    });
   }, [socket, userProfile?.id]);
   const handleSearchMyChats = (searchText) => {
-    // setMyChatList(myChatList.filter((chat) => chat.name.includes(searchText)));
+    if (!searchText) {
+      setFilterMyChat(myChatList);
+      return;
+    }
+    setFilterMyChat(
+      myChatList.filter((chat) =>
+        chat?.participants?.some(
+          (participant) =>
+            participant._id !== userProfile?.id &&
+            participant?.name?.toLowerCase().includes(searchText)
+        )
+      )
+    );
   };
 
+  const trimContent = (content) => {
+    if (content.length > 20) {
+      return content.substring(0, 20) + "...";
+    }
+    return content;
+  };
+
+  useEffect(() => {
+    setFilterMyChat(myChatList);
+  }, [myChatList]);
   return (
     <>
       <Index.Box
@@ -104,7 +129,7 @@ const MyChats = () => {
                 </Index.InputAdornment>
               ),
             }}
-            onChange={(e) => handleSearchMyChats(e.target.value)}
+            onChange={(e) => handleSearchMyChats(e.target.value?.toLowerCase())}
           />
           <Index.Tooltip arrow title="Start new chat" placement="bottom">
             <Index.IconButton aria-label="start new chat" onClick={handleOpen}>
@@ -114,7 +139,7 @@ const MyChats = () => {
         </Index.Box>
         {/* <Index.List sx={{ bgcolor: "background.paper" }}> */}
         <Index.List>
-          {myChatList.map((chat) => (
+          {filterMyChat.map((chat) => (
             <Index.ListItemButton
               key={chat.id}
               button
@@ -148,7 +173,7 @@ const MyChats = () => {
                         }),
                     }}
                   >
-                    {chat?.lastMessage?.content}
+                    {trimContent(chat?.lastMessage?.content)}
                   </Index.Typography>
                 }
               />
