@@ -5,48 +5,6 @@ import SearchNewUser from "../searchNewUser/SearchNewUser";
 import { useSocket } from "../../context/SocketContext";
 import { useAppContext } from "../../context/AppContext";
 
-const messages = [
-  {
-    id: 1,
-    name: "John Doe",
-    message: "How are you doing?",
-    time: "16:45",
-    avatar: "https://randomuser.me/api/portraits/men/0.jpg",
-    read: true,
-  },
-  {
-    id: 2,
-    name: "Travis Barker",
-    message: "...is typing",
-    time: "16:45",
-    avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-    isTyping: true,
-  },
-  {
-    id: 3,
-    name: "Kate Rose",
-    message: "See you tomorrow!",
-    time: "16:45",
-    avatar: "https://randomuser.me/api/portraits/men/2.jpg",
-    read: true,
-  },
-  {
-    id: 4,
-    name: "Robert Parker",
-    message: "Awesome!",
-    time: "16:45",
-    avatar: "https://randomuser.me/api/portraits/men/3.jpg",
-    read: false,
-  },
-  {
-    id: 5,
-    name: "Rick Owens",
-    message: "Good idea 😄",
-    time: "16:45",
-    avatar: "https://randomuser.me/api/portraits/men/4.jpg",
-    read: true,
-  },
-];
 const MyChats = () => {
   const { selectedChat, setSelectedChat, newMessage } =
     PageIndex.useAppContext();

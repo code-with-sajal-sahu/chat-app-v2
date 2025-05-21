@@ -151,7 +151,6 @@ const sendMessage = async (sender, receiver, content, file) => {
     //       .status(400)
     //       .send({ status: 400, message: "Content and receiver are required" });
     //   }
-    console.log("41: ", file);
     let uploadedFile = "";
     if (file) {
       // const uploadDir = path.join(process.cwd(), "public", "upload");
@@ -164,7 +163,6 @@ const sendMessage = async (sender, receiver, content, file) => {
       // // Generate unique filename
       // const fileName = `${Date.now()}-${file?.name}`;
       // const filePath = path.join(uploadDir, fileName);
-      // console.log("56: ", filePath);
       // // Write buffer to file
       // fs.writeFileSync(filePath, file?.value);
 
@@ -192,7 +190,6 @@ const sendMessage = async (sender, receiver, content, file) => {
       chatRoom: chatRoom._id,
       file: uploadedFile?.data || [],
     });
-    console.log("54: ", message);
     chatRoom.lastMessage = message._id;
     chatRoom.messages.push(message._id);
     await chatRoom.save();
@@ -213,7 +210,7 @@ const sendMessage = async (sender, receiver, content, file) => {
 const socketConfig = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: process.env.FRONTEND_BASE_URL,
       methods: ["GET", "POST"],
     },
     maxHttpBufferSize: 1e8,
@@ -249,7 +246,6 @@ const socketConfig = (server) => {
 
     socket.on("send-message", async (messageData) => {
       if (!messageData) return;
-      // console.log("100: ", messageData)
 
       const { sender, receiver, content, file } = messageData;
 

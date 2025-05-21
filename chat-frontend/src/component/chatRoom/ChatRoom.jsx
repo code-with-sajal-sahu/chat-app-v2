@@ -22,7 +22,7 @@ const MessageBubble = Index.styled(Index.Paper)(({ theme, isUser }) => ({
   }),
 }));
 
-const SOCKET_ENDPOINT = "http://localhost:5000";
+const SOCKET_ENDPOINT = process.env.REACT_APP_SOCKET_URL;
 
 const ChatRoom = () => {
   const [messageInput, setMessageInput] = useState("");
@@ -30,13 +30,14 @@ const ChatRoom = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const fileInputRef = useRef(null);
-  const { selectedChat, setNewMessage, newMessage } = PageIndex.useAppContext();
+  const { selectedChat, setSelectedChat, setNewMessage, newMessage } = PageIndex.useAppContext();
   const myProfile = JSON.parse(localStorage.getItem("user"));
   const { socket } = useSocket();
   const messagesEndRef = useRef(null);
   const { userProfile } = useAppContext();
   const [openViewImage, setOpenViewImage] = useState(-1);
   const [viewImageSlides, setViewImageSlides] = useState([]);
+  const selectedChatRef = useRef(selectedChat);
 
   const handleOpenViewImage = (img) => {
     const imgIndex = viewImageSlides.findIndex((slide) => slide.src === img);
@@ -109,7 +110,9 @@ const ChatRoom = () => {
   useEffect(() => {
     scrollToBottom();
   }, [chatMessages]);
-
+  useEffect(() => {
+    selectedChatRef.current = selectedChat;
+  }, [selectedChat]);
   useEffect(() => {
     setChatMessages([]);
     if (socket && selectedChat?.chatRoom) {
@@ -134,19 +137,20 @@ const ChatRoom = () => {
 
     socket?.on("new-message", (messageInfo) => {
       if (messageInfo?.status === 200) {
+        const currentChat = selectedChatRef.current;
         if (
-          (selectedChat && !selectedChat.chatRoom) ||
-          selectedChat?.chatRoom === messageInfo?.data?.chatRoom
+          (currentChat && !currentChat.chatRoom) ||
+          currentChat?.chatRoom === messageInfo?.data?.chatRoom
         ) {
-          setChatMessages((prev) => {
-            return [...prev, messageInfo?.data];
-          });
+          setChatMessages((prev) => [...prev, messageInfo?.data]);
+          setSelectedChat((prev) => ({ ...prev, chatRoom: messageInfo?.data?.chatRoom }));
+    
           if (messageInfo?.data?.file?.length > 0) {
             let files = messageInfo?.data?.file?.map((file) => ({
               src: `${SOCKET_ENDPOINT}/public/upload/${file}`,
               description: messageInfo?.data?.content,
             }));
-            setViewImageSlides((prev) => ([...prev, ...files]));
+            setViewImageSlides((prev) => [...prev, ...files]);
           }
         }
         socket?.emit("get-my-chats", userProfile?.id);
