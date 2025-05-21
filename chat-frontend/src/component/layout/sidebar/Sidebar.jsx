@@ -4,7 +4,7 @@ import Index from "../../../container/Index";
 import ProfileDrawer from "../../profileDrawer/ProfileDrawer";
 
 const Sidebar = () => {
-  const { isDarkMode, toggleTheme, setUserProfile } = PageIndex.useAppContext();
+  const { isDarkMode, toggleTheme, setUserProfile, setSelectedChat } = PageIndex.useAppContext();
   const navigate = PageIndex.useNavigate();
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
@@ -23,6 +23,7 @@ const Sidebar = () => {
     setUserProfile(null);
     navigate("/login");
     handleCloseModal();
+    setSelectedChat(null);
   };
 
   return (
